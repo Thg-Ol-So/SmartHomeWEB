@@ -1,0 +1,141 @@
+<div class="page-header">
+    <span class="h2"><b>AGENDAMENTOS</b></span>
+</div>
+<br>
+<div class="row ">
+    <div class="col-md-2">
+        <button class="btn btn-primary btn-lg" ng-click="novoAg()">
+            NOVO AGENDAMENTO
+        </button>
+    </div>
+</div>
+
+<br>
+<div class="alert alert-warning" role="alert" ng-show="lista.length==0">
+    <strong>Tabela: </strong> Nenhum registro Cadastrado.
+</div>
+<div style=" height: 350px; overflow: auto; ">
+    <table class="table table-striped table-hover table-bordered text-center" ng-show="lista.length>0">
+
+        <thead >
+        <!--CALUNAS-->
+        <tr >
+            <th class="text-center">DATA & Hora</th>
+            <th class="text-center">VENTILADOR</th>
+            <th class="text-center">LUZ SALA</th>
+            <th class="text-center">TV</th>
+            <th class="text-center">LUZ QUARTO</th>
+            <th class="text-center">EDITAR</th>
+            <th class="text-center">REMOVER</th>
+        </tr>
+        </thead>
+
+        <tbody ng-repeat="list in lista">
+        <!--LINHA 1-->
+        <tr >
+            <td>{{list.data_hora | date:"dd/MM/yyyy HH:mm:ss"}}</td>
+            <td>{{list.estadoVentilador}}</td>
+            <td>{{list.estadoLuzSala}}</td>
+            <td>{{list.estadoTelevisor}}</td>
+            <td>{{list.estadoLuzQuarto}}</td>
+            <td ><button class="btn btn-primary" role="button" ng-click="edit(list)"><span class="glyphicon glyphicon-pencil"></span></button></td>
+            <td ><button class="btn btn-danger" role="button" ng-click="modaldelet(list.id)"><span class="glyphicon glyphicon-floppy-remove"></span></button></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<!---------------------------------------------   Modal Editar    --------------------------------------------->
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog ">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h3 class="modal-title text-center">Editar Agenda</h3>
+            </div>
+            <div class="modal-body">
+                <div class="form-group col-xs-6 col-xs-offset-3 text-center">
+                    <label >Data & Horario</label>
+                    <div class="input-group">
+                        <span class="input-group-btn">
+                            <div class="btn-group ">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <span class="glyphicon glyphicon-calendar"
+                                          aria-hidden="true"></span>
+                                </button>
+                            <ul class="dropdown-menu" ng-click="$event.preventDefault();$event.stopPropagation()"
+                                >
+                                <div date-picker="start" max-view="month" min-view="minutes"
+                                     class="ng-isolate-scope" ng-model="agenda.data_hora"></div>
+                            </ul>
+                        </div>
+                    </span>
+
+                        <input date-time format="DD/MM/YYYY HH:mm:ss" ng-model="agenda.data_hora" ng-readonly="true" class="form-control" disabled ng-required="true" name="data">
+                    </div>
+                </div>
+                <table class="table">
+                    <tr>
+                        <td><label > TV : </label></td>
+                        <td><div ng-repeat="opttv in userOptions" class="radio-inline tv">
+                                <input type="radio" name="tv" ng-checked="agenda.estadoTelevisor == opttv.id" ng-model="agenda.estadoTelevisor" ng-value='opttv.id' id="{{opttv.id}}" required />{{opttv.text}}
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label> VENTILADOR : </label></td>
+                        <td>
+                            <div ng-repeat="ventilador in userOptions" class="radio-inline">
+                                <input type="radio" name="ventilador" ng-checked="agenda.estadoVentilador == ventilador.id" ng-value='ventilador.id' ng-model="agenda.estadoVentilador" id="{{ventilador.id}}" required />{{ventilador.text}}
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                    <td><label> LUZ DA SALA : </label></td>
+                        <td>
+                            <div ng-repeat="sala in userOptions" class="radio-inline">
+                                <input type="radio" name="sala" ng-model="agenda.estadoLuzSala" ng-checked="agenda.estadoLuzSala == sala.id" ng-value='sala.id' id="{{sala.id}}" required />{{sala.text}}
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label > LUZ DO QUARTO : </label></td>
+                        <td>
+                            <div ng-repeat="quarto in userOptions" class="radio-inline">
+                                <input type="radio" name="luz" class="qr" ng-model="agenda.estadoLuzQuarto" ng-checked='agenda.estadoLuzQuarto == quarto.id' ng-value='quarto.id' id="{{quarto.id}}" required />{{quarto.text}}
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <div align="center">
+                <button type="button" class="btn btn-primary" ng-click="atualizar(agenda)" data-dismiss="modal">Salvar</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!---------------------------------------------   Modal Deletar    --------------------------------------------->
+<div class="modal fade" id="modalDelet">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+
+            <div class="modal-body h3 text-center">
+                <p>Deseja Excluir?</p>
+            </div>
+            <div class="modal-footer">
+                <div align="center">
+                    <button type="button" class="btn btn-primary" ng-click="delet()" data-dismiss="modal">Sim</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Não</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
