@@ -5,7 +5,10 @@ angular.module("sistemaappiot").controller("agendaController", function ($scope,
     };
     /*------------------------------- Deletar ---------------------------------------------- */
     var id_delete = {};
+
     $scope.modaldelet = function (id) {
+        $scope.isTru = true;
+        $scope.mensagem = "Deseja Excluir?";
         $("#modalDelet").modal();
         id_delete = id;
     };
@@ -13,7 +16,7 @@ angular.module("sistemaappiot").controller("agendaController", function ($scope,
         sistemaApi.dell(id_delete).then(function (dados) {
             listaAgenda();
         }, function (err) {
-            alert("Erro ao excluir: " + err);
+            mostrarModal("Erro ao excluir", false);
         });
     };
     /*------------------------------- Atualizar ---------------------------------------------- */
@@ -23,10 +26,10 @@ angular.module("sistemaappiot").controller("agendaController", function ($scope,
         $scope.agenda = agenda;
         $scope.agenda.data_hora = moment($scope.agenda.data_hora).format("YYYY-MM-DD HH:mm");
         sistemaApi.editar($scope.agenda).then(function (dados) {
-            alert("Sucess");
+            mostrarModal("Atualizado com Sucesso",false);
             listaAgenda();
         },function (err) {
-            alert("Erro");
+            mostrarModal("Erro ao atualizar", false);
         });
 
     };
@@ -40,6 +43,14 @@ angular.module("sistemaappiot").controller("agendaController", function ($scope,
         $scope.agenda = copia;
 
     };
+    var mostrarModal = function (mensagem, isBotao) {
+        $scope.isTru = isBotao;
+        $scope.mensagem = mensagem;
+        $("#modalDelet").modal();
+        $interval(function () {
+            $("#modalDelet").modal('hide');
+        }, 2000,1);
+    };
     /*------------------------------- Listar ---------------------------------------------- */
     $scope.listar = true;
     var listaAgenda = function () {
@@ -49,13 +60,12 @@ angular.module("sistemaappiot").controller("agendaController", function ($scope,
                 $scope.lista[key].data_hora = new Date($scope.lista[key].data_hora);
             }
         }, function (err) {
-            alert("Erro")
+            mostrarModal("Erro ao listar", false);
         });
     };
 
     var lista = function () {
         $interval(function () {
-            //alert('ola')
             listaAgenda();
         }, 60000, 0);
     };

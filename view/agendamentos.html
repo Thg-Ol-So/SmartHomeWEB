@@ -122,10 +122,10 @@
         <div class="modal-content">
 
             <div class="modal-body h3 text-center">
-                <p>Deseja Excluir?</p>
+                <p>{{mensagem}}</p>
             </div>
-            <div class="modal-footer">
-                <div align="center">
+            <div class="modal-footer" ng-show="isTru">
+                <div align="center" >
                     <button type="button" class="btn btn-primary" ng-click="delet()" data-dismiss="modal">Sim</button>
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Não</button>
                 </div>
